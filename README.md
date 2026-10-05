@@ -108,7 +108,7 @@ npx playwright test tests/UI/login.spec.ts --headed
 | `login.spec.ts` | Passing |
 | Negative login tests (2) | Passing |
 | `companies.spec.ts` (API) | Passing |
-| `fleet-management.spec.ts` | Not yet run since refactoring |
+| `fleet-management.spec.ts` | Passing |
 | `add-factory.spec.ts` | Failing: Add button stays disabled after the form is filled (under investigation) |
 | `delete-factory.spec.ts` | Not run (intentionally) |
 
