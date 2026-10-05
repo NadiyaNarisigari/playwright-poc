@@ -30,7 +30,8 @@ Proof of concept for automated UI and API testing of the Noedra Node QA environm
 - **Test data separation** (`test-data/`): input data is kept out of the specs so it can be
   changed without editing test logic.
 - **Manual test cases in Gherkin** (`test-cases/`): plain-language scenarios that document
-  what is covered, readable by testers and stakeholders.
+  what is covered. They are documentation only and are not executed; the automated
+  equivalent of the first scenario is `tests/API/companies.spec.ts`.
 
 ## Project structure
 
