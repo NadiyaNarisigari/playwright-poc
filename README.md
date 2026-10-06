@@ -11,6 +11,24 @@ Proof of concept for automated UI and API testing of the Noedra Node QA environm
 - A maintainable structure (page objects, fixtures, separated test data) that can grow
   into a full regression suite.
 
+## Why Playwright
+
+- **One tool for UI and API tests**: the same framework drives the browser and calls the
+  gateway API (`request` fixture), with shared config, reports and test data.
+- **Built-in auto-waiting**: actions wait for elements to be visible and ready, which suits
+  this Angular app with loading lists, overlays and dialogs, and avoids fixed sleeps.
+- **Stable, readable locators**: elements are found by role, label, placeholder or text
+  (e.g. `getByRole('button', { name: 'Add' })`), the way a user sees them, instead of
+  brittle CSS paths.
+- **Everything included**: test runner, assertions, retries, HTML report, screenshots and
+  trace viewer come with Playwright; no extra libraries to assemble.
+- **Strong debugging tools**: the HTML report shows every step, and the trace viewer and
+  `codegen` recorder helped find the right locators for this app.
+- **TypeScript support out of the box**: typed page objects and test data catch mistakes
+  in the editor before a test is run.
+- **Cross-browser ready**: Chromium is used now; Firefox and WebKit can be switched on in
+  `playwright.config.ts` once the OTP step no longer needs a person.
+
 ## Design decisions
 
 - **Page Object Model** (`pages/`): each screen has a class with its actions (fill a form,
