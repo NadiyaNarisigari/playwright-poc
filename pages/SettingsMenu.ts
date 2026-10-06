@@ -1,15 +1,16 @@
 import { Page, Locator } from '@playwright/test';
+import { settingsMenuLocators as L } from '../locators/settingsMenu';
 
-/** The Settings menu in the top-right corner (profile card, role, navigation items). */
+// The Settings menu in the top-right corner
 export class SettingsMenu {
   readonly settingsButton: Locator;
   readonly roleLabel: Locator;
   readonly fleetManagementItem: Locator;
 
   constructor(page: Page) {
-    this.settingsButton = page.getByRole('button', { name: 'settings Settings' });
-    this.roleLabel = page.locator('.toolbar-profile.roles');
-    this.fleetManagementItem = page.getByRole('menuitem', { name: 'Fleet Management' });
+    this.settingsButton = L.buttons.settings(page);
+    this.roleLabel = L.labels.role(page);
+    this.fleetManagementItem = L.menuItems.fleetManagement(page);
   }
 
   async open() {

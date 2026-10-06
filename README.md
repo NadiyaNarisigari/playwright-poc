@@ -5,16 +5,21 @@ Proof of concept for automated UI and API testing of the Noedra Node QA environm
 
 ## What it solves
 
-- Repeatable end-to-end checks of core user flows (login, fleet management, factory
-  creation/deletion) instead of manual regression clicks.
+- Repeatable end-to-end checks of core user flows (login, fleet management, factory and
+  customer creation/deletion) instead of manual regression clicks.
 - API checks against the gateway in the same framework as the UI tests.
 - A maintainable structure (page objects, fixtures, separated test data) that can grow
   into a full regression suite.
 
 ## Design decisions
 
-- **Page Object Model** (`pages/`): selectors and page actions live in one place per page,
-  so UI changes are fixed once rather than in every test.
+- **Page Object Model** (`pages/`): each screen has a class with its actions (fill a form,
+  select a customer). Tests only call these actions and contain no selectors.
+- **Locators in one place** (`locators/`): all selectors, one file per screen, grouped by
+  type (fields, buttons, messages, ...). When the UI changes, only these files need updating.
+- **Shared helpers**: `pages/BasePage.ts` holds browser actions every page uses (pick a
+  dropdown option, close a list, retry opening a dropdown). `utils/` holds plain helper
+  functions (read `.env`, build unique names, escape text for patterns, delete safety check).
 - **Login fixture** (`fixtures/loginFixture.ts`): UI tests receive an already-authenticated
   page, so login logic is not repeated in each spec.
 - **Semi-manual OTP**: login requires an SMS one-time password. The fixture fills email and
@@ -28,7 +33,12 @@ Proof of concept for automated UI and API testing of the Noedra Node QA environm
   (`environments.ts`, `api.ts`). Credentials and tokens come only from `.env`, which is
   gitignored. No real credentials are in the repository.
 - **Test data separation** (`test-data/`): input data is kept out of the specs so it can be
-  changed without editing test logic.
+  changed without editing test logic. Records the tests create get a fixed prefix and a
+  timestamp (e.g. `AutoTest-Customer-1791283378971`).
+- **Safe deletes**: tests only delete records whose name starts with a test prefix, and only
+  after the confirmation dialog names that record. Real data is never deleted.
+- **Environment guard**: `TEST_ENV` selects qa (default), pre-prd or prod. Because tests
+  create and delete data, running against prod is refused unless `ALLOW_PROD=true` is set.
 - **Manual test cases in Gherkin** (`test-cases/`): plain-language scenarios that document
   what is covered. They are documentation only and are not executed; the automated
   equivalent of the first scenario is `tests/API/companies.spec.ts`.
@@ -36,14 +46,16 @@ Proof of concept for automated UI and API testing of the Noedra Node QA environm
 ## Project structure
 
 ```
-config/                 environments.ts (app URLs), api.ts (gateway base URL)
-fixtures/loginFixture.ts  Authenticated-page fixture with OTP auto-submit
-pages/                  Page objects (LoginPage, OtpPage, AddFactoryPage, ...)
-test-data/              users.ts, invalidCredentials.ts, factories.ts
-tests/UI/               UI specs
-tests/API/              API specs
-test-cases/api/         Gherkin manual test cases
-.env.example            Template for required environment variables
+config/                   environments.ts (app URLs), api.ts (gateway base URL)
+fixtures/loginFixture.ts  Logged-in page fixture with OTP auto-submit
+locators/                 All selectors, one file per screen
+pages/                    Page objects (actions per screen) + BasePage (shared actions)
+utils/                    Helper functions: env.ts, testData.ts, guards.ts, regex.ts
+test-data/                users.ts, invalidCredentials.ts, factories.ts, customers.ts
+tests/UI/                 UI specs
+tests/API/                API specs
+test-cases/api/           Gherkin manual test cases
+.env.example              Template for required environment variables
 ```
 
 ## Code flow
@@ -54,7 +66,8 @@ UI tests:
 3. A person types the 6-digit SMS OTP in the browser.
 4. Once all six digit boxes are filled, `OtpPage` clicks Submit automatically.
 5. The fixture waits for the dashboard URL, then hands the page to the test.
-6. The spec drives the app through page objects and asserts on the results.
+6. The spec drives the app through page objects, which take their selectors from
+   `locators/`, and asserts on the results.
 
 API tests:
 1. The spec reads `QA_API_TOKEN` from `.env` and skips with a clear message if it is missing.
@@ -81,7 +94,11 @@ Fill in `.env`:
 QA_EMAIL=
 QA_PASSWORD=
 QA_API_TOKEN=
+QA_CSM_EMAIL=
 ```
+
+`QA_CSM_EMAIL` is the Customer Success Manager assigned to test customers; it must exist in
+the app's CSM list.
 
 `QA_API_TOKEN` is the bearer token without the word "Bearer". Get it by logging in to the
 QA app, opening DevTools → Network, and copying the `Authorization` header value of any
@@ -102,17 +119,6 @@ npm run report      # open the last HTML report
 npx playwright test tests/UI/login.spec.ts --headed
 ```
 
-## Status
-
-| Test | Status |
-| --- | --- |
-| `login.spec.ts` | Passing |
-| Negative login tests (2) | Passing |
-| `companies.spec.ts` (API) | Passing |
-| `fleet-management.spec.ts` | Passing |
-| `add-factory.spec.ts` | Failing: Add button stays disabled after the form is filled (under investigation) |
-| `delete-factory.spec.ts` | Not run (intentionally) |
-
 ## Notes and limitations
 
 - **Manual OTP**: UI tests cannot run unattended or in CI as-is. Options for later include a
@@ -120,10 +126,12 @@ npx playwright test tests/UI/login.spec.ts --headed
   `storageState` with a defined expiry policy. Each needs the client's approval.
 - **Manual API token**: the bearer token is copied by hand and expires. A service account
   would remove this step.
-- **Test data in QA**: `add-factory.spec.ts` creates real records in the shared QA
-  environment and does not clean them up. `delete-factory.spec.ts` exists but has not been
-  run; review what it deletes before running it.
-- **Unverified tests**: tests not marked as passing above should be treated as unverified.
+- **Test data in QA**: `add-customer.spec.ts` deletes the customer it creates.
+  `add-factory.spec.ts` leaves its factory in QA; `delete-factory.spec.ts` removes one
+  `Automation_Test_Factory_` factory per run.
+- **Known issues**: `add-factory.spec.ts` was failing because the Add button stayed disabled;
+  a ZIP code was added to the factory form data as the likely fix, still to be confirmed.
+  `delete-factory.spec.ts` has not been run yet.
 - **Reports contain sensitive data**: traces, videos and screenshots can capture typed
   credentials, and API attachments contain client data. `playwright-report/` and
   `test-results/` are gitignored and must not be committed or shared.

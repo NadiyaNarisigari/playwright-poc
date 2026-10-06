@@ -1,7 +1,9 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { addFactoryLocators as L } from '../locators/addFactory';
 import type { FactoryDetails } from '../test-data/factories';
 
+// Actions on the "Add New Factory" form
 export class AddFactoryPage extends BasePage {
   readonly modalTitle: Locator;
   readonly nameInput: Locator;
@@ -9,44 +11,33 @@ export class AddFactoryPage extends BasePage {
   readonly stateDropdown: Locator;
   readonly cityDropdown: Locator;
   readonly streetInput: Locator;
+  readonly zipCodeInput: Locator;
   readonly cancelButton: Locator;
   readonly addButton: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.modalTitle = page.getByText('Add New Factory');
-    this.nameInput = page.getByRole('textbox', { name: 'companyName' });
-    this.countryDropdown = page.getByRole('combobox', { name: 'companyCountry' });
-    this.stateDropdown = page.getByRole('combobox', { name: 'companyState' });
-    this.cityDropdown = page.getByRole('combobox', { name: 'companyCity' });
-    this.streetInput = page.getByRole('textbox', { name: 'companyStreet1' });
-    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
-    this.addButton = page.getByRole('button', { name: 'Add', exact: true });
+    this.modalTitle = L.form.title(page);
+    this.nameInput = L.fields.name(page);
+    this.countryDropdown = L.address.country(page);
+    this.stateDropdown = L.address.state(page);
+    this.cityDropdown = L.address.city(page);
+    this.streetInput = L.address.street(page);
+    this.zipCodeInput = L.address.zipCode(page);
+    this.cancelButton = L.buttons.cancel(page);
+    this.addButton = L.buttons.add(page);
   }
 
-  private async selectFrom(dropdown: Locator, value: string) {
-    await dropdown.click();
-    await this.page.getByRole('option', { name: value, exact: true }).click();
-  }
-
-  async selectCountry(country: string) {
-    await this.selectFrom(this.countryDropdown, country);
-  }
-
-  async selectState(state: string) {
-    await this.selectFrom(this.stateDropdown, state);
-  }
-
-  async selectCity(city: string) {
-    await this.selectFrom(this.cityDropdown, city);
-  }
-
+  // Fills every field of the form
   async fillFactoryForm(details: FactoryDetails) {
     await this.nameInput.fill(details.name);
-    await this.selectCountry(details.country);
-    await this.selectState(details.state);
-    await this.selectCity(details.city);
+    await this.selectOption(this.countryDropdown, details.country);
+    await this.selectOption(this.stateDropdown, details.state);
+    await this.selectOption(this.cityDropdown, details.city);
     await this.streetInput.fill(details.street);
+    await this.zipCodeInput.fill(details.zipCode);
+    // Leave the last field so the form validates it
+    await this.page.keyboard.press('Tab');
   }
 
   async clickAdd() {

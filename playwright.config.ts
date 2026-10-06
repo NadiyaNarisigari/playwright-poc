@@ -32,6 +32,8 @@ export default defineConfig({
   use: {
     baseURL: environment.baseURL,
     trace: 'on-first-retry',
+    // A click or fill gives up after 15 s instead of waiting for the whole test timeout.
+    actionTimeout: 15_000,
   },
 
   projects: [

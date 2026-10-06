@@ -1,6 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { loginLocators as L } from '../locators/login';
 
+// Actions on the login screen
 export class LoginPage extends BasePage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
@@ -9,16 +11,17 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.emailInput = page.getByRole('textbox', { name: 'Enter your email' });
-    this.passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
-    this.loginButton = page.getByRole('button', { name: 'Login' });
-    this.errorMessage = page.getByText('Incorrect username or password.');
+    this.emailInput = L.fields.email(page);
+    this.passwordInput = L.fields.password(page);
+    this.loginButton = L.buttons.login(page);
+    this.errorMessage = L.messages.error(page);
   }
 
   async navigateToLogin() {
     await this.goto('/login');
   }
 
+  // Types like a user and leaves the field, so the form validates it
   async fillEmail(email: string) {
     await this.emailInput.click();
     await this.emailInput.pressSequentially(email);

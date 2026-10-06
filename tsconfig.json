@@ -11,6 +11,8 @@
      "tests/**/*.ts",
      "config/**/*.ts",
      "pages/**/*.ts",
+     "locators/**/*.ts",
+     "utils/**/*.ts",
      "fixtures/**/*.ts",
      "test-data/**/*.ts",
      "playwright.config.ts"

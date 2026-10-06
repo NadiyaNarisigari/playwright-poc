@@ -1,8 +1,7 @@
 import { users } from './users';
 
-// The app's password policy needs 11+ characters, an upper-case letter, a number and a
-// special character. A password that breaks the policy keeps the Login button disabled,
-// so the "Incorrect username or password." message would never appear.
+// Meets the password rules (11+ chars, upper case, number, special char) but is wrong,
+// so the app shows "Incorrect username or password." instead of disabling Login.
 const WRONG_PASSWORD = 'Wrong!Pass123';
 
 export const invalidCredentials = {
@@ -11,8 +10,9 @@ export const invalidCredentials = {
     password: WRONG_PASSWORD,
   },
   invalidPassword: {
+    // Real account email with the wrong password
     get email() {
-      return users.qaUser.email; // a real account, paired with the wrong password
+      return users.qaUser.email;
     },
     password: WRONG_PASSWORD,
   },

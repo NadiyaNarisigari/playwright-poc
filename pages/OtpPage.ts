@@ -1,26 +1,27 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { otpLocators as L } from '../locators/otp';
 
+// Actions on the OTP screen
 export class OtpPage extends BasePage {
   readonly submitButton: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.submitButton = page.getByRole('button', { name: 'Submit' });
+    this.submitButton = L.buttons.submit(page);
   }
 
-  private otpDigitInput(digitNumber: number): Locator {
-    return this.page.getByRole('textbox', { name: `Digit ${digitNumber} of` });
+  private digitInput(digitNumber: number): Locator {
+    return L.fields.digit(this.page, digitNumber);
   }
 
+  // Types a 6-digit code (the code is never put in error messages, they end up in reports)
   async fillOtp(code: string) {
     if (!/^\d{6}$/.test(code)) {
-      // Do not include the code itself in the message; errors end up in reports.
       throw new Error(`OTP must be exactly 6 digits, received ${code.length} characters`);
     }
-
     for (let i = 0; i < 6; i++) {
-      await this.otpDigitInput(i + 1).fill(code[i]);
+      await this.digitInput(i + 1).fill(code[i]);
     }
   }
 
@@ -33,16 +34,12 @@ export class OtpPage extends BasePage {
     await this.clickSubmit();
   }
 
-  // Waits for the user to type the SMS code by hand, then submits automatically.
+  // Waits for a person to type the SMS code, then clicks Submit
   async submitWhenOtpEnteredManually(timeoutMs = 120_000) {
-    // Wait for the last box first: this is the long wait while the user types.
-    await expect(this.otpDigitInput(6)).toHaveValue(/^\d$/, { timeout: timeoutMs });
-
-    // Then confirm every box holds a digit (e.g. the user didn't skip one).
+    await expect(this.digitInput(6)).toHaveValue(/^\d$/, { timeout: timeoutMs });
     for (let i = 1; i <= 6; i++) {
-      await expect(this.otpDigitInput(i)).toHaveValue(/^\d$/, { timeout: 5_000 });
+      await expect(this.digitInput(i)).toHaveValue(/^\d$/, { timeout: 5_000 });
     }
-
     await this.clickSubmit();
   }
 }

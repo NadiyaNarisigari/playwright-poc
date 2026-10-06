@@ -1,3 +1,6 @@
+import { uniqueName } from '../utils/testData';
+
+// Every factory the tests create starts with this, so it is easy to find and safe to delete
 export const FACTORY_NAME_PREFIX = 'Automation_Test_Factory_';
 
 export interface FactoryDetails {
@@ -6,15 +9,17 @@ export interface FactoryDetails {
   state: string;
   city: string;
   street: string;
+  zipCode: string;
 }
 
-/** Builds factory details with a name that is unique on every call. */
+// A new factory with a unique name. Same address as the customer test, which is known to work.
 export function newFactoryDetails(): FactoryDetails {
   return {
-    name: `${FACTORY_NAME_PREFIX}${Date.now()}`,
+    name: uniqueName(FACTORY_NAME_PREFIX),
     country: 'India',
-    state: 'Andhra Pradesh',
-    city: 'Adoni',
-    street: '123 Automation Street',
+    state: 'Karnataka',
+    city: 'Bengaluru',
+    street: 'Street1',
+    zipCode: '560037',
   };
 }

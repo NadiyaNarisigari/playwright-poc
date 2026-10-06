@@ -1,12 +1,7 @@
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing environment variable ${name}. Copy .env.example to .env and fill it in.`);
-  }
-  return value;
-}
+import { requiredEnv } from '../utils/env';
 
-// Getters, so the variables are only required by tests that actually use them.
+// Login for the QA test account, read from .env.
+// Getters, so a value is only required by tests that actually use it.
 export const users = {
   qaUser: {
     get email() {
