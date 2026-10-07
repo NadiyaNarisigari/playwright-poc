@@ -1,7 +1,6 @@
 # Playwright + TypeScript POC
 
-Proof of concept for automated UI and API testing of the Noedra Node QA environment
-(`https://qa.sensproducts.siemens-energy.com`) using Playwright and TypeScript.
+Automated UI and API tests using Playwright and TypeScript.
 
 ## What it solves
 
