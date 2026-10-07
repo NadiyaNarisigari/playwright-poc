@@ -1,15 +1,15 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, Page } from '@playwright/test';
 import { openLoginPage, login } from '../pages/LoginPage';
 import { submitOtpWhenEnteredManually } from '../pages/OtpPage';
 import { users } from '../test-data/users';
 
-const OTP_WAIT_MS = 2 * 60 * 1000;
-const DASHBOARD_WAIT_MS = 30 * 1000;
-const TEST_TIMEOUT_MS = 4 * 60 * 1000;
+const OTP_WAIT_MS = 120_000;       // 2 minutes
+const DASHBOARD_WAIT_MS = 30_000;  // 30 seconds
+const TEST_TIMEOUT_MS = 240_000;   // 4 minutes
 
 type LoginFixtures = {
-  // Logs in and returns once the dashboard is open. Needs a person to type the SMS OTP.
-  loggedInPage: void;
+  // A page that is already logged in, with the dashboard open. Needs a person to type the SMS OTP.
+  loggedInPage: Page;
 };
 
 export const test = base.extend<LoginFixtures>({
@@ -39,7 +39,8 @@ export const test = base.extend<LoginFixtures>({
       );
     }
 
-    await use();
+    // Hand the logged-in page to the test
+    await use(page);
   },
 });
 

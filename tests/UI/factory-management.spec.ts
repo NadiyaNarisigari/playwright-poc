@@ -9,31 +9,32 @@ import { openAddFactoryForm, fillFactoryForm, saveFactory } from '../../pages/Ad
 import { newFactoryDetails, FACTORY_NAME_PREFIX } from '../../test-data/factories';
 
 test.describe('Factory management', () => {
+  // loggedInPage is a page that has already logged in (email, password, OTP).
   // Creates a factory, finds it, then deletes it again so QA stays clean.
   // If the test fails before the delete step, delete the Automation_Test_Factory_... factory by hand.
-  test('Administrator can add and delete a factory', async ({ page, loggedInPage }) => {
+  test('Administrator can add and delete a factory', async ({ loggedInPage }) => {
     const factory = newFactoryDetails();
 
     await test.step('Open Fleet Management', async () => {
-      await openFleetManagement(page);
+      await openFleetManagement(loggedInPage);
     });
 
     await test.step('Add a factory', async () => {
-      await openAddFactoryForm(page);
-      await fillFactoryForm(page, factory);
-      await saveFactory(page);
+      await openAddFactoryForm(loggedInPage);
+      await fillFactoryForm(loggedInPage, factory);
+      await saveFactory(loggedInPage);
     });
 
     await test.step('Find the factory', async () => {
-      await selectFactory(page, factory.name);
+      await selectFactory(loggedInPage, factory.name);
     });
 
     await test.step('Delete the factory', async () => {
-      await deleteFactory(page, factory.name, FACTORY_NAME_PREFIX);
+      await deleteFactory(loggedInPage, factory.name, FACTORY_NAME_PREFIX);
     });
 
     await test.step('Check it is gone', async () => {
-      await verifyFactoryDeleted(page, factory.name);
+      await verifyFactoryDeleted(loggedInPage, factory.name);
     });
   });
 });

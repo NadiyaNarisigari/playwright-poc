@@ -9,28 +9,29 @@ import { openAddCustomerForm, fillCustomerForm, saveCustomer } from '../../pages
 import { newTestCustomer, TEST_CUSTOMER_PREFIX } from '../../test-data/customers';
 
 test.describe('Customer management', () => {
+  // loggedInPage is a page that has already logged in (email, password, OTP).
   // Creates a customer, finds it, then deletes it again so QA stays clean.
-  // If the test fails before the delete step, delete the AutoTest-Customer-... customer by hand.
-  test('Administrator can add and delete a customer', async ({ page, loggedInPage }) => {
+  // If the test fails before the delete step, delete the AutoTest-Customer-... customer manually in application.
+  test('Administrator can add and delete a customer', async ({ loggedInPage }) => {
     const customer = newTestCustomer();
 
     await test.step('Open the Customer tab', async () => {
-      await openFleetManagement(page);
-      await openCustomerTab(page);
+      await openFleetManagement(loggedInPage);
+      await openCustomerTab(loggedInPage);
     });
 
     await test.step('Add a customer', async () => {
-      await openAddCustomerForm(page);
-      await fillCustomerForm(page, customer);
-      await saveCustomer(page, customer.name);
+      await openAddCustomerForm(loggedInPage);
+      await fillCustomerForm(loggedInPage, customer);
+      await saveCustomer(loggedInPage, customer.name);
     });
 
     await test.step('Find the customer', async () => {
-      await selectCustomer(page, customer.name);
+      await selectCustomer(loggedInPage, customer.name);
     });
 
     await test.step('Delete the customer', async () => {
-      await deleteCustomer(page, customer.name, TEST_CUSTOMER_PREFIX);
+      await deleteCustomer(loggedInPage, customer.name, TEST_CUSTOMER_PREFIX);
     });
   });
 });

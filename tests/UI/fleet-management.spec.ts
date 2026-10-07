@@ -3,15 +3,16 @@ import { openSettingsMenu, verifyRole, chooseFleetManagementInMenu } from '../..
 import { verifyFleetManagementTabs } from '../../pages/FleetManagementPage';
 
 test.describe('Fleet Management', () => {
-  test('Administrator can navigate to Fleet Management', async ({ page, loggedInPage }) => {
+  // loggedInPage is a page that has already logged in (email, password, OTP)
+  test('Administrator can navigate to Fleet Management', async ({ loggedInPage }) => {
     await test.step('Check the user is an Administrator', async () => {
-      await openSettingsMenu(page);
-      await verifyRole(page, 'Administrator');
+      await openSettingsMenu(loggedInPage);
+      await verifyRole(loggedInPage, 'Administrator');
     });
 
     await test.step('Open Fleet Management', async () => {
-      await chooseFleetManagementInMenu(page);
-      await verifyFleetManagementTabs(page);
+      await chooseFleetManagementInMenu(loggedInPage);
+      await verifyFleetManagementTabs(loggedInPage);
     });
   });
 });
