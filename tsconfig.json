@@ -11,6 +11,7 @@
      "tests/**/*.ts",
      "config/**/*.ts",
      "pages/**/*.ts",
+     "api/**/*.ts",
      "locators/**/*.ts",
      "utils/**/*.ts",
      "fixtures/**/*.ts",

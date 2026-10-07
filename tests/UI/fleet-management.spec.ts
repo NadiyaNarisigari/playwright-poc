@@ -1,14 +1,17 @@
-import { test, expect } from '../../fixtures/loginFixture';
-import { FleetManagementPage } from '../../pages/FleetManagementPage';
+import { test } from '../../fixtures/loginFixture';
+import { openSettingsMenu, verifyRole, chooseFleetManagementInMenu } from '../../pages/SettingsMenu';
+import { verifyFleetManagementTabs } from '../../pages/FleetManagementPage';
 
-test('Administrator can navigate to Fleet Management', async ({ page, loggedInPage }) => {
-  const fleet = new FleetManagementPage(page);
+test.describe('Fleet Management', () => {
+  test('Administrator can navigate to Fleet Management', async ({ page, loggedInPage }) => {
+    await test.step('Check the user is an Administrator', async () => {
+      await openSettingsMenu(page);
+      await verifyRole(page, 'Administrator');
+    });
 
-  await fleet.settingsMenu.open();
-  await expect(fleet.settingsMenu.roleLabel).toHaveText('Administrator');
-  await fleet.settingsMenu.fleetManagementItem.click();
-
-  await expect(page).toHaveURL(/\/group/);
-  await expect(fleet.factoryTab).toBeVisible();
-  await expect(fleet.customerTab).toBeVisible();
+    await test.step('Open Fleet Management', async () => {
+      await chooseFleetManagementInMenu(page);
+      await verifyFleetManagementTabs(page);
+    });
+  });
 });
