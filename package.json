@@ -3,20 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "description": "Playwright + TypeScript POC for UI and API test automation",
-  "scripts": {
+    "scripts": {
     "test": "playwright test",
-    "test:ui": "playwright test tests/UI --headed",
+    "test:ui": "playwright test tests/UI",
     "test:api": "playwright test tests/API",
+    "test:parallel": "playwright test --fully-parallel --workers=4",
+    "test:api:parallel": "playwright test tests/API --fully-parallel --workers=3",
     "report": "playwright show-report"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
-    "ajv": "^8.20.0",
+    "ajv": "^8.17.1",
     "dotenv": "^18.0.5",
     "typescript": "^7.0.2"
   }
