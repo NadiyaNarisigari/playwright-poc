@@ -35,9 +35,13 @@ export const fleetManagementLocators = {
     dropdown: (page: Page) => page.locator('mat-select[panelclass="customer-select-panel"]'),
     list: (page: Page) => page.getByRole('listbox'),
     searchInput: (page: Page) => page.getByPlaceholder('Search Customer', { exact: true }),
-    // Row on the right; the name must stand on its own (not inside quotes)
+        // Row on the right; the name must stand on its own (not inside quotes).
+    // Ignores the dropdown's selected value, which shows the same name when it fits in 30 characters.
     row: (page: Page, name: string) =>
-      page.getByText(new RegExp(`(^|\\s)${escapeRegExp(name)}(\\s|$)`)).first(),
+      page
+        .getByText(new RegExp(`(^|\\s)${escapeRegExp(name)}(\\s|$)`))
+        .and(page.locator('xpath=//*[not(ancestor-or-self::mat-select)]'))
+        .first(),
   },
 
   customerDelete: {

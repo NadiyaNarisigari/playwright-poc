@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { addFactoryLocators as L } from '../locators/addFactory';
 import { fleetManagementLocators as F } from '../locators/fleetManagement';
 import { selectOption } from './CommonFunctions';
-import type { FactoryDetails } from '../test-data/factories';
+import type { FactoryDetails } from '../test-data/ui/factories';
 
 // Opens the "Add New Factory" form from the toolbar menu
 export const openAddFactoryForm = async (page: Page) => {

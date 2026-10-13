@@ -6,7 +6,7 @@ import {
   verifyFactoryDeleted,
 } from '../../pages/FleetManagementPage';
 import { openAddFactoryForm, fillFactoryForm, saveFactory } from '../../pages/AddFactoryPage';
-import { newFactoryDetails, FACTORY_NAME_PREFIX } from '../../test-data/factories';
+import { newFactoryDetails, FACTORY_NAME_PREFIX } from '../../test-data/ui/factories';
 
 test.describe('Factory management', () => {
   // loggedInPage is a page that has already logged in (email, password, OTP).

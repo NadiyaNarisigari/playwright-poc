@@ -1,7 +1,7 @@
 import { test as base, expect, Page } from '@playwright/test';
 import { openLoginPage, login } from '../pages/LoginPage';
 import { submitOtpWhenEnteredManually } from '../pages/OtpPage';
-import { users } from '../test-data/users';
+import { users } from '../test-data/ui/users';
 
 const OTP_WAIT_MS = 120_000;       // 2 minutes
 const DASHBOARD_WAIT_MS = 30_000;  // 30 seconds

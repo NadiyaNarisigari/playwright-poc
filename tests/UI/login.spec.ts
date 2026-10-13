@@ -1,7 +1,7 @@
 import { test } from '../../fixtures/loginFixture';
 import { openLoginPage, login, verifyLoginError } from '../../pages/LoginPage';
 import { verifyDashboardOpen } from '../../pages/DashboardPage';
-import { invalidCredentials } from '../../test-data/invalidCredentials';
+import { invalidCredentials } from '../../test-data/ui/invalidCredentials';
 
 test.describe('Login', () => {
 // loggedInPage is a page that has already logged in (email, password, OTP)

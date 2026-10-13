@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { addCustomerLocators as L } from '../locators/addCustomer';
 import { selectOption, clickOutsideOn } from './CommonFunctions';
 import { escapeRegExp } from '../utils/regex';
-import type { CustomerDetails } from '../test-data/customers';
+import type { CustomerDetails } from '../test-data/ui/customers';
 
 // Opens the "Add New Customer" form
 export const openAddCustomerForm = async (page: Page) => {

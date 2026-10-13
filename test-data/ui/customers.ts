@@ -1,5 +1,5 @@
-import { requiredEnv } from '../utils/env';
-import { uniqueName } from '../utils/testData';
+import { requiredEnv } from '../../utils/env';
+import { shortUniqueName } from '../../utils/testData';
 
 export interface CustomerDetails {
   name: string;
@@ -14,11 +14,14 @@ export interface CustomerDetails {
 // Every customer the tests create starts with this, so it is easy to find and safe to delete
 export const TEST_CUSTOMER_PREFIX = 'AutoTest-Customer-';
 
+// Prefix + random part, 30 characters in total, so names stay unique across parallel workers
+const CUSTOMER_NAME_MAX_LENGTH = 30;
+
 // A new customer with a unique name.
 // Names may only use letters, digits, '_' and '-'. The CSM email is real, so it comes from .env.
 export function newTestCustomer(): CustomerDetails {
   return {
-    name: uniqueName(TEST_CUSTOMER_PREFIX),
+    name: shortUniqueName(TEST_CUSTOMER_PREFIX, CUSTOMER_NAME_MAX_LENGTH),
     csmEmail: requiredEnv('QA_CSM_EMAIL'),
     country: 'India',
     state: 'Karnataka',

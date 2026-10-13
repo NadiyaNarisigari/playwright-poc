@@ -6,7 +6,7 @@ import {
   deleteCustomer,
 } from '../../pages/FleetManagementPage';
 import { openAddCustomerForm, fillCustomerForm, saveCustomer } from '../../pages/AddCustomerPage';
-import { newTestCustomer, TEST_CUSTOMER_PREFIX } from '../../test-data/customers';
+import { newTestCustomer, TEST_CUSTOMER_PREFIX } from '../../test-data/ui/customers';
 
 test.describe('Customer management', () => {
   // loggedInPage is a page that has already logged in (email, password, OTP).

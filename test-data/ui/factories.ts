@@ -1,4 +1,4 @@
-import { shortUniqueName } from '../utils/testData';
+import { shortUniqueName } from '../../utils/testData';
 
 // Every factory the tests create starts with this, so it is easy to find and safe to delete
 export const FACTORY_NAME_PREFIX = 'Automation_Test_Factory_';
